@@ -1,0 +1,28 @@
+@model HospitalIS.Web.Models.Appointment
+@{
+    ViewData["Title"] = "Карточка приема";
+}
+
+<h1 class="page-title">Карточка приема</h1>
+
+<div class="card p-4">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AppointmentDateTime)</dt>
+        <dd class="col-sm-9">@Model.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Пациент</dt>
+        <dd class="col-sm-9">@Model.Patient?.FullName</dd>
+
+        <dt class="col-sm-3">Врач</dt>
+        <dd class="col-sm-9">@Model.Doctor?.FullName</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Diagnosis)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Diagnosis)</dd>
+    </dl>
+</div>
+
+<div class="mt-3 d-flex gap-2">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</div>
+

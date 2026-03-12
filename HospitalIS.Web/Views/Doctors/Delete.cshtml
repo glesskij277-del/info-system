@@ -1,0 +1,31 @@
+@model HospitalIS.Web.Models.Doctor
+@{
+    ViewData["Title"] = "Удаление врача";
+}
+
+<h1 class="page-title text-danger">Удаление врача</h1>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<div class="card p-4">
+    <p>Вы уверены, что хотите удалить врача?</p>
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FullName)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.FullName)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Specialty)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Specialty)</dd>
+    </dl>
+
+    <p class="mb-3"><strong>Связанные приемы:</strong> @ViewData["AppointmentsCount"]</p>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

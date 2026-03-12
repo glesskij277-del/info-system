@@ -1,0 +1,48 @@
+@model HospitalIS.Web.Models.MedicalRecord
+@{
+    ViewData["Title"] = "Редактирование медкарты";
+}
+
+<h1 class="page-title">Редактирование медкарты</h1>
+
+<div class="card p-4">
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="CardNumber" class="form-label"></label>
+                <input asp-for="CardNumber" class="form-control" />
+                <span asp-validation-for="CardNumber" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PatientId" class="form-label"></label>
+                <select asp-for="PatientId" class="form-select" asp-items="ViewBag.PatientId">
+                    <option value="0">-- Выберите пациента --</option>
+                </select>
+                <span asp-validation-for="PatientId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="CreatedDate" class="form-label"></label>
+                <input asp-for="CreatedDate" type="date" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="DiseaseHistory" class="form-label"></label>
+                <textarea asp-for="DiseaseHistory" class="form-control" rows="6" placeholder="Краткое описание перенесенных и текущих заболеваний"></textarea>
+                <span asp-validation-for="DiseaseHistory" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-secondary">Назад</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -1,0 +1,102 @@
+@model IEnumerable<HospitalIS.Web.Models.Appointment>
+@{
+    ViewData["Title"] = "Приемы";
+    var searchTerm = ViewData["SearchTerm"]?.ToString();
+    var dateFrom = ViewData["DateFrom"]?.ToString();
+    var dateTo = ViewData["DateTo"]?.ToString();
+    var period = ViewData["Period"]?.ToString() ?? "all";
+}
+
+<section class="page-head">
+    <div>
+        <h1 class="page-title">Приемы</h1>
+        <p class="page-subtitle">Управление расписанием и историей посещений.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-secondary">Отчеты и CSV</a>
+        <a asp-action="Create" class="btn btn-primary">+ Новый прием</a>
+    </div>
+</section>
+
+<section class="surface filter-surface">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label for="searchTerm" class="form-label">Поиск</label>
+            <input id="searchTerm" type="text" name="searchTerm" value="@searchTerm" class="form-control" placeholder="Пациент, врач, диагноз" />
+        </div>
+        <div class="col-md-2">
+            <label for="doctorId" class="form-label">Врач</label>
+            <select id="doctorId" name="doctorId" class="form-select" asp-items="ViewBag.FilterDoctorId">
+                <option value="">Все</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="patientId" class="form-label">Пациент</label>
+            <select id="patientId" name="patientId" class="form-select" asp-items="ViewBag.FilterPatientId">
+                <option value="">Все</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="dateFrom" class="form-label">С даты</label>
+            <input id="dateFrom" type="date" name="dateFrom" value="@dateFrom" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label for="dateTo" class="form-label">По дату</label>
+            <input id="dateTo" type="date" name="dateTo" value="@dateTo" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="period" class="form-label">Период</label>
+            <select id="period" name="period" class="form-select">
+                <option value="all" selected="@(period == "all" ? "selected" : null)">Все</option>
+                <option value="today" selected="@(period == "today" ? "selected" : null)">Сегодня</option>
+                <option value="upcoming" selected="@(period == "upcoming" ? "selected" : null)">Будущие</option>
+                <option value="past" selected="@(period == "past" ? "selected" : null)">Прошедшие</option>
+            </select>
+        </div>
+        <div class="col-md-8 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Применить фильтр</button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Сброс</a>
+        </div>
+    </form>
+</section>
+
+<section class="surface table-wrap p-2">
+@if (!Model.Any())
+{
+    <div class="empty-state m-2">Приемы по выбранным условиям не найдены.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-app align-middle">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.AppointmentDateTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.PatientId)</th>
+                    <th>@Html.DisplayNameFor(model => model.DoctorId)</th>
+                    <th>@Html.DisplayNameFor(model => model.Diagnosis)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.Patient?.FullName</td>
+                    <td>@item.Doctor?.FullName</td>
+                    <td>@item.Diagnosis</td>
+                    <td class="text-nowrap">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Просмотр</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Изменить</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Удалить</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+</section>
+

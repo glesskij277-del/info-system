@@ -1,0 +1,45 @@
+@model HospitalIS.Web.Models.Doctor
+@{
+    ViewData["Title"] = "Добавление врача";
+}
+
+<h1 class="page-title">Добавление врача</h1>
+
+<div class="card p-4">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Specialty" class="form-label"></label>
+                <input asp-for="Specialty" class="form-control" />
+                <span asp-validation-for="Specialty" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="OfficeNumber" class="form-label"></label>
+                <input asp-for="OfficeNumber" class="form-control" placeholder="Например: 205" />
+                <span asp-validation-for="OfficeNumber" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" placeholder="+7 918 123-45-67" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-secondary">Назад</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

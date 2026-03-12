@@ -1,0 +1,82 @@
+@model HospitalIS.Web.Models.Patient
+@{
+    ViewData["Title"] = "Карточка пациента";
+}
+
+<h1 class="page-title mb-3">Карточка пациента</h1>
+
+<div class="surface p-4 mb-3">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FullName)</dt>
+        <dd class="col-sm-9">@Model.FullName</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DateOfBirth)</dt>
+        <dd class="col-sm-9">@Model.DateOfBirth.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Gender)</dt>
+        <dd class="col-sm-9">@(Model.Gender == Gender.Male ? "Мужской" : "Женский")</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Address)</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Phone)</dt>
+        <dd class="col-sm-9">@Model.Phone</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.OmsPolicyNumber)</dt>
+        <dd class="col-sm-9">@Model.OmsPolicyNumber</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Snils)</dt>
+        <dd class="col-sm-9">@Model.Snils</dd>
+
+        <dt class="col-sm-3">Медкарта</dt>
+        <dd class="col-sm-9">
+            @if (Model.MedicalRecord != null)
+            {
+                <a asp-controller="MedicalRecords" asp-action="Details" asp-route-id="@Model.MedicalRecord.Id">@Model.MedicalRecord.CardNumber</a>
+            }
+            else
+            {
+                <span class="text-muted">Не заведена</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div class="surface p-3 mb-3">
+    <h2 class="section-title mb-3">История приемов</h2>
+
+    @if (!Model.Appointments.Any())
+    {
+        <div class="empty-state">Приемы по пациенту отсутствуют.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-app align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Дата и время</th>
+                        <th>Врач</th>
+                        <th>Диагноз</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var appointment in Model.Appointments)
+                {
+                    <tr>
+                        <td>@appointment.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@appointment.Doctor?.FullName</td>
+                        <td>@appointment.Diagnosis</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div class="d-flex gap-2">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</div>
+

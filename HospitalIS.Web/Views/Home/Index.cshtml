@@ -1,0 +1,136 @@
+@model HomeDashboardViewModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<section class="hero surface mb-4">
+    <div class="hero__content">
+        <span class="badge badge-soft mb-2">Portfolio Project · ASP.NET Core</span>
+        <h1 class="hero__title">Информационная система учета пациентов</h1>
+        <p class="hero__subtitle">Единое рабочее пространство для регистратуры, врачей и медицинских карт.</p>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <a class="btn btn-brand" asp-controller="Patients" asp-action="Create">Зарегистрировать пациента</a>
+            <a class="btn btn-outline-brand" asp-controller="Appointments" asp-action="Create">Создать прием</a>
+            <a class="btn btn-outline-brand" asp-controller="MedicalRecords" asp-action="Create">Завести медкарту</a>
+            <a class="btn btn-outline-brand" asp-controller="Reports" asp-action="Index">Открыть отчеты</a>
+        </div>
+    </div>
+</section>
+
+<section class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <article class="metric-card surface">
+            <p class="metric-card__label">Пациенты</p>
+            <p class="metric-card__value">@Model.PatientsCount</p>
+        </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <article class="metric-card surface">
+            <p class="metric-card__label">Врачи</p>
+            <p class="metric-card__value">@Model.DoctorsCount</p>
+        </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <article class="metric-card surface">
+            <p class="metric-card__label">Приемы</p>
+            <p class="metric-card__value">@Model.AppointmentsCount</p>
+        </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <article class="metric-card surface">
+            <p class="metric-card__label">Медкарты</p>
+            <p class="metric-card__value">@Model.MedicalRecordsCount</p>
+        </article>
+    </div>
+</section>
+
+<section class="row g-3 mb-4">
+    <div class="col-md-6">
+        <article class="surface p-3 h-100">
+            <h2 class="section-title">Запланировано сегодня</h2>
+            <p class="section-value">@Model.TodayAppointmentsCount</p>
+            <p class="text-muted mb-0">Приемы в текущие сутки.</p>
+        </article>
+    </div>
+    <div class="col-md-6">
+        <article class="surface p-3 h-100">
+            <h2 class="section-title">Ближайшие 7 дней</h2>
+            <p class="section-value">@Model.UpcomingWeekAppointmentsCount</p>
+            <p class="text-muted mb-0">Плановая нагрузка на неделю вперед.</p>
+        </article>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-7">
+        <article class="surface p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="section-title mb-0">Ближайшие приемы</h2>
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-sm btn-outline-brand">Все приемы</a>
+            </div>
+
+            @if (!Model.UpcomingAppointments.Any())
+            {
+                <div class="empty-state">
+                    <p class="mb-0">Ближайших приемов нет.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-app">
+                        <thead>
+                            <tr>
+                                <th>Дата и время</th>
+                                <th>Пациент</th>
+                                <th>Врач</th>
+                                <th>Диагноз</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.UpcomingAppointments)
+                        {
+                            <tr>
+                                <td>@item.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>@item.PatientName</td>
+                                <td>@item.DoctorName</td>
+                                <td>@item.Diagnosis</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+    </div>
+
+    <div class="col-lg-5">
+        <article class="surface p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="section-title mb-0">Последние пациенты</h2>
+                <a asp-controller="Patients" asp-action="Index" class="btn btn-sm btn-outline-brand">Все пациенты</a>
+            </div>
+
+            @if (!Model.RecentPatients.Any())
+            {
+                <div class="empty-state">
+                    <p class="mb-0">Пациенты пока не добавлены.</p>
+                </div>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                @foreach (var patient in Model.RecentPatients)
+                {
+                    <li class="list-group-item px-0">
+                        <p class="mb-1 fw-semibold">@patient.FullName</p>
+                        <p class="mb-0 text-muted small">Телефон: @patient.Phone</p>
+                        <p class="mb-0 text-muted small">ОМС: @patient.OmsPolicyNumber</p>
+                    </li>
+                }
+                </ul>
+            }
+        </article>
+    </div>
+</section>
+

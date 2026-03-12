@@ -1,0 +1,24 @@
+@model HospitalIS.Web.Models.MedicalRecord
+@{
+    ViewData["Title"] = "Удаление медкарты";
+}
+
+<h1 class="page-title text-danger">Удаление медкарты</h1>
+
+<div class="card p-4">
+    <p>Вы уверены, что хотите удалить медкарту?</p>
+    <dl class="row">
+        <dt class="col-sm-3">Номер карты</dt>
+        <dd class="col-sm-9">@Model.CardNumber</dd>
+
+        <dt class="col-sm-3">Пациент</dt>
+        <dd class="col-sm-9">@Model.Patient?.FullName</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+

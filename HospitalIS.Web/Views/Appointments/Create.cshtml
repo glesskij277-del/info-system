@@ -1,0 +1,49 @@
+@model HospitalIS.Web.Models.Appointment
+@{
+    ViewData["Title"] = "Добавление приема";
+}
+
+<h1 class="page-title">Добавление приема</h1>
+
+<div class="card p-4">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="AppointmentDateTime" class="form-label"></label>
+                <input asp-for="AppointmentDateTime" type="datetime-local" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PatientId" class="form-label"></label>
+                <select asp-for="PatientId" class="form-select" asp-items="ViewBag.PatientId">
+                    <option value="0">-- Выберите пациента --</option>
+                </select>
+                <span asp-validation-for="PatientId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DoctorId" class="form-label"></label>
+                <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.DoctorId">
+                    <option value="0">-- Выберите врача --</option>
+                </select>
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Diagnosis" class="form-label"></label>
+                <textarea asp-for="Diagnosis" class="form-control" rows="4" placeholder="Описание диагноза по результатам приема"></textarea>
+                <span asp-validation-for="Diagnosis" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-secondary">Назад</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

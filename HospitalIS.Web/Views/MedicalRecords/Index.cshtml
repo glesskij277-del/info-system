@@ -1,0 +1,64 @@
+@model IEnumerable<HospitalIS.Web.Models.MedicalRecord>
+@{
+    ViewData["Title"] = "Медкарты";
+    var searchTerm = ViewData["SearchTerm"]?.ToString();
+}
+
+<section class="page-head">
+    <div>
+        <h1 class="page-title">Медицинские карты</h1>
+        <p class="page-subtitle">История заболеваний и карта пациента.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Новая медкарта</a>
+</section>
+
+<section class="surface filter-surface">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label for="searchTerm" class="form-label">Поиск</label>
+            <input id="searchTerm" type="text" name="searchTerm" value="@searchTerm" class="form-control" placeholder="Номер карты, ФИО пациента, история болезни" />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Найти</button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Сброс</a>
+        </div>
+    </form>
+</section>
+
+<section class="surface table-wrap p-2">
+@if (!Model.Any())
+{
+    <div class="empty-state m-2">Медкарты не найдены.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-app align-middle">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.CardNumber)</th>
+                    <th>@Html.DisplayNameFor(model => model.PatientId)</th>
+                    <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.CardNumber</td>
+                    <td>@item.Patient?.FullName</td>
+                    <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                    <td class="text-nowrap">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Просмотр</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Изменить</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Удалить</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+</section>
+

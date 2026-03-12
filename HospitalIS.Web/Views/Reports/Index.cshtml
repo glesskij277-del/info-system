@@ -1,0 +1,157 @@
+@model ReportsDashboardViewModel
+@{
+    ViewData["Title"] = "Отчеты";
+    var dateFrom = Model.DateFrom?.ToString("yyyy-MM-dd");
+    var dateTo = Model.DateTo?.ToString("yyyy-MM-dd");
+}
+
+<section class="page-head">
+    <div>
+        <h1 class="page-title">Отчеты и аналитика</h1>
+        <p class="page-subtitle">Сводка по приемам и выгрузка данных в CSV для преподавателя или методиста.</p>
+    </div>
+</section>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+}
+
+<section class="surface filter-surface">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label for="dateFrom" class="form-label">С даты</label>
+            <input id="dateFrom" type="date" name="dateFrom" value="@dateFrom" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="dateTo" class="form-label">По дату</label>
+            <input id="dateTo" type="date" name="dateTo" value="@dateTo" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="doctorId" class="form-label">Врач</label>
+            <select id="doctorId" name="doctorId" class="form-select" asp-items="ViewBag.FilterDoctorId">
+                <option value="">Все врачи</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="patientId" class="form-label">Пациент</label>
+            <select id="patientId" name="patientId" class="form-select" asp-items="ViewBag.FilterPatientId">
+                <option value="">Все пациенты</option>
+            </select>
+        </div>
+
+        <div class="col-md-6 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Сброс</a>
+        </div>
+        <div class="col-md-6 d-flex gap-2">
+            <a asp-action="ExportAppointmentsCsv"
+               asp-route-dateFrom="@dateFrom"
+               asp-route-dateTo="@dateTo"
+               asp-route-doctorId="@Model.DoctorId"
+               asp-route-patientId="@Model.PatientId"
+               class="btn btn-outline-primary w-100">Скачать приемы (CSV)</a>
+            <a asp-action="ExportPatientsCsv" class="btn btn-outline-secondary w-100">Скачать пациентов (CSV)</a>
+        </div>
+    </form>
+</section>
+
+<section class="row g-3 mb-3">
+    <div class="col-md-3">
+        <article class="surface metric-card h-100">
+            <p class="metric-card__label">Приемов по фильтру</p>
+            <p class="metric-card__value">@Model.FilteredAppointmentsCount</p>
+        </article>
+    </div>
+    <div class="col-md-3">
+        <article class="surface metric-card h-100">
+            <p class="metric-card__label">Приемов сегодня</p>
+            <p class="metric-card__value">@Model.TodayAppointmentsCount</p>
+        </article>
+    </div>
+    <div class="col-md-3">
+        <article class="surface metric-card h-100">
+            <p class="metric-card__label">На 7 дней</p>
+            <p class="metric-card__value">@Model.UpcomingWeekAppointmentsCount</p>
+        </article>
+    </div>
+    <div class="col-md-3">
+        <article class="surface metric-card h-100">
+            <p class="metric-card__label">За текущий месяц</p>
+            <p class="metric-card__value">@Model.CurrentMonthAppointmentsCount</p>
+        </article>
+    </div>
+</section>
+
+<section class="row g-3">
+    <div class="col-lg-5">
+        <article class="surface p-3 h-100">
+            <h2 class="section-title mb-3">Топ врачей по нагрузке</h2>
+            @if (!Model.TopDoctors.Any())
+            {
+                <div class="empty-state">Нет данных по выбранным фильтрам.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-app align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Врач</th>
+                                <th>Специальность</th>
+                                <th>Приемов</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.TopDoctors)
+                            {
+                                <tr>
+                                    <td>@item.DoctorFullName</td>
+                                    <td>@item.Specialty</td>
+                                    <td class="fw-semibold">@item.AppointmentsCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+    </div>
+
+    <div class="col-lg-7">
+        <article class="surface p-3 h-100">
+            <h2 class="section-title mb-3">Ближайшие приемы по фильтрам</h2>
+            @if (!Model.UpcomingAppointments.Any())
+            {
+                <div class="empty-state">Будущих приемов по выбранным условиям нет.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-app align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Дата и время</th>
+                                <th>Пациент</th>
+                                <th>Врач</th>
+                                <th>Диагноз</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.UpcomingAppointments)
+                            {
+                                <tr>
+                                    <td>@item.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>@item.PatientFullName</td>
+                                    <td>@item.DoctorFullName</td>
+                                    <td>@item.Diagnosis</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+    </div>
+</section>
+
